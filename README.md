@@ -15,3 +15,20 @@ cd RPGGame
 cmake -B build
 cmake --build build
 ```
+Or, use the build scripts
+## Windows
+```
+.\build.bat
+```
+By default it's build for release. If you want to debug
+```
+.\build.bat Debug
+```
+## Linux
+```
+./build.sh
+```
+By default it's build for release. If you want to debug
+```
+./build.sh Debug
+```
