@@ -15,9 +15,9 @@ echo "Building project ($CONFIG)..."
 cmake --build build --config "$CONFIG" -- -j"$(nproc)"
 
 echo "Build succeeded. Output is in build/"
-cp "./build/_deps/flecs-build/$CONFIG/flecs.dll" "./build/$CONFIG/"
-cp "./build/_deps/sdl_image-build/$CONFIG/SDL3_image.dll" "./build/$CONFIG/" 
-cp "./build/_deps/sdl-build/$CONFIG/SDL3.dll" "./build/$CONFIG/"
+cp "./build/_deps/flecs-build/libflecs.so" "./build/"
+cp "./build/_deps/sdl_image-build/libSDL3_image.so" "./build/" 
+cp "./build/_deps/sdl-build/libSDL3.so" "./build/"
 
 
 EXE="build/RPGGame"
