@@ -51,7 +51,7 @@ SDL_AppResult Game::HandleEvent(SDL_Event* event){
 
 SDL_AppResult Game::OnRender()
 {
-    SDL_SetRenderDrawColor(m_renderer.get(), 255, 0, 0, 255);
+    SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(m_renderer.get());
 
     SDL_RenderPresent(m_renderer.get());
