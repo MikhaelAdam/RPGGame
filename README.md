@@ -2,7 +2,7 @@
 Proyek game ke-4 yang kita bikin. Gatau bakal selesai ato ngak
 
 # Requirements
-- CMake v3.30
+- CMake v3.30 
 - git
 - Mouse
 - Keyboard

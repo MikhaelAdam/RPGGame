@@ -12,7 +12,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CPM_DOWNLOAD_VERSION 0.42.3) 
 
-
 file(DOWNLOAD
     "https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.42.3/CPM.cmake"
     "${CMAKE_BINARY_DIR}/cmake/CPM.cmake"
@@ -29,4 +28,6 @@ set(SDLIMAGE_AVIF OFF CACHE BOOL "" FORCE)
 CPMAddPackage("gh:libsdl-org/SDL_image#bec9134")
 list(APPEND LIBS SDL3_image::SDL3_image)
 
-add_subdirectory(src)
+add_executable(${PROJECT_NAME} src/main.cpp)
+# target_sources(${PROJECT_NAME} PRIVATE )
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
