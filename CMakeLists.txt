@@ -19,15 +19,47 @@ file(DOWNLOAD
 )
 
 include(${CMAKE_BINARY_DIR}/cmake/CPM.cmake)
+
 set(LIBS)
 
 CPMAddPackage("gh:libsdl-org/SDL#8e37db5")
 list(APPEND LIBS SDL3::SDL3)
 
+CPMAddPackage("gh:SanderMertens/flecs#d7d0c4f")
+list(APPEND LIBS flecs::flecs)
+
 set(SDLIMAGE_AVIF OFF CACHE BOOL "" FORCE)
 CPMAddPackage("gh:libsdl-org/SDL_image#bec9134")
 list(APPEND LIBS SDL3_image::SDL3_image)
 
+CPMAddPackage(
+    NAME imgui
+    GITHUB_REPOSITORY ocornut/imgui
+    GIT_TAG master 
+    DOWNLOAD_ONLY YES
+)
+if(imgui_ADDED)
+    set(IMGUI_SOURCES
+        ${imgui_SOURCE_DIR}/imgui.cpp
+        ${imgui_SOURCE_DIR}/imgui_demo.cpp
+        ${imgui_SOURCE_DIR}/imgui_draw.cpp
+        ${imgui_SOURCE_DIR}/imgui_tables.cpp
+        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
+    )
+
+    add_library(imgui STATIC ${IMGUI_SOURCES})
+    
+    target_include_directories(imgui PUBLIC 
+        ${imgui_SOURCE_DIR}
+        ${imgui_SOURCE_DIR}/backends
+    )
+
+    target_link_libraries(imgui PUBLIC SDL3::SDL3)
+endif()
+list(APPEND LIBS imgui)
+
 add_executable(${PROJECT_NAME} src/main.cpp)
-# target_sources(${PROJECT_NAME} PRIVATE )
+add_subdirectory(src)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
