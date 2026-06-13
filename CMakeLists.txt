@@ -66,3 +66,13 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 add_subdirectory(src)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+    COMMENT "Syncing modified assets..."
+)
+
+# Ties the asset target as a dependency to your executable
+add_dependencies(${PROJECT_NAME} copy_assets)

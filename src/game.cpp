@@ -14,7 +14,7 @@ Game::Game(int argc, char **argv)
 
 SDL_AppResult Game::Init(){
     SDL_SetAppMetadata("RPG Game", "1.0.0", "com.mikhadams.rpggame");
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD)) {
 	    return sdl_error();
     }
 
@@ -39,16 +39,18 @@ SDL_AppResult Game::Init(){
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  
 
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
 
-    // Setup scaling
-    ImGuiStyle& style = ImGui::GetStyle();      // Set initial font scale. (in docking branch: using io.ConfigDpiScaleFonts=true automatically overrides this for every window depending on the current monitor)
-
-    // Setup Platform/Renderer backends
+    
+    ImGuiStyle& style = ImGui::GetStyle();
+    
     ImGui_ImplSDL3_InitForSDLRenderer(m_window.get(), m_renderer.get());
     ImGui_ImplSDLRenderer3_Init(m_renderer.get());
-
+    
     m_stateMachine->changeState(new MainMenuState(m_stateMachine));
+    SDL_FRect srcRect = { 0, 0, 16, 16 };
+    SDL_FRect dstRect = { 100, 100, 64, 64 };
+    sprite = TextureManager::getInstance()->loadTexture("assets/ray.png", "ray", m_renderer.get(), srcRect, dstRect);
+    
     return SDL_APP_CONTINUE;
 
 }
@@ -79,6 +81,12 @@ SDL_AppResult Game::OnRender()
     m_stateMachine->render( m_renderer.get());
     SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(m_renderer.get());
+
+    if (sprite && sprite->texture)
+    {
+    	SDL_RenderTextureRotated(m_renderer.get(), sprite->texture, &sprite->srcRect, &sprite->dstRect, sprite->angle, sprite->center, sprite->flip);
+    }
+    
     ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_renderer.get());
     SDL_RenderPresent(m_renderer.get());
     return SDL_APP_CONTINUE;
@@ -104,6 +112,7 @@ SDL_AppResult Game::OnUpdate()
     ImGui::End();
 
     m_stateMachine->update(deltaTime);
+    Sprite* raySprite = TextureManager::getInstance()->getTexture("ray");
     return SDL_APP_CONTINUE;
 }
 

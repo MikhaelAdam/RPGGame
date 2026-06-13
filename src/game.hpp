@@ -1,5 +1,7 @@
 #pragma once
+#include "texturemanager.hpp"
 #include "state/statemachine.hpp"
+#include "components/spritecomponent.hpp"
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
@@ -35,6 +37,7 @@ private:
 	std::unique_ptr <SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_renderer;
     
     StateMachine *m_stateMachine;
+    Sprite* sprite;
     flecs::world m_ecs;
 
     SDL_AppResult sdl_error(const std::source_location& loc = std::source_location::current()) {
