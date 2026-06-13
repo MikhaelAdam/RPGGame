@@ -12,3 +12,7 @@ typedef struct Sprite
 	SDL_FPoint* center;
 	SDL_FlipMode flip;
 }Sprite;
+
+typedef struct Priority{
+	int priority;
+} Priority;

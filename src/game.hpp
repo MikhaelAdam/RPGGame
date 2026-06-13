@@ -1,7 +1,7 @@
 #pragma once
 #include "texturemanager.hpp"
 #include "state/statemachine.hpp"
-#include "components/spritecomponent.hpp"
+#include "components/renderingcomponent.hpp"
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"

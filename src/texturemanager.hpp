@@ -1,5 +1,5 @@
 #pragma once
-#include "components/spritecomponent.hpp"
+#include "components/renderingcomponent.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
@@ -22,8 +22,8 @@ class TextureManager
 			const char* filePath, 
 			std::string name,  
 			SDL_Renderer* renderer, 
-			SDL_FRect &src = (SDL_FRect &)SDL_FRect{0,0,0,0}, 
-			SDL_FRect &dst = (SDL_FRect &)SDL_FRect{0,0,0,0}, 
+			SDL_FRect &src , 
+			SDL_FRect &dst , 
 			float angle = 0,
 			SDL_FPoint* center = nullptr,
 			SDL_FlipMode flip = SDL_FLIP_NONE,

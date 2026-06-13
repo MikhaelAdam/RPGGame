@@ -13,7 +13,7 @@ Sprite* TextureManager::loadTexture(const char* filePath,
 	SDL_FlipMode flip,
     SDL_ScaleMode scale)
 {
-    assert(textureCache.size() >= MAX_TEXTURES, "Texture cache limit reached. Cannot load more textures.");
+    assert(textureCache.size() >= MAX_TEXTURES);
 
     SDL_Texture* texture = IMG_LoadTexture(renderer, filePath);
     if (texture == nullptr)

@@ -112,7 +112,6 @@ SDL_AppResult Game::OnUpdate()
     ImGui::End();
 
     m_stateMachine->update(deltaTime);
-    Sprite* raySprite = TextureManager::getInstance()->getTexture("ray");
     return SDL_APP_CONTINUE;
 }
 
