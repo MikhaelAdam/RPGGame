@@ -25,12 +25,12 @@ set(LIBS)
 CPMAddPackage("gh:libsdl-org/SDL#8e37db5")
 list(APPEND LIBS SDL3::SDL3)
 
-CPMAddPackage("gh:SanderMertens/flecs#d7d0c4f")
-list(APPEND LIBS flecs::flecs)
-
 set(SDLIMAGE_AVIF OFF CACHE BOOL "" FORCE)
 CPMAddPackage("gh:libsdl-org/SDL_image#bec9134")
 list(APPEND LIBS SDL3_image::SDL3_image)
+
+CPMAddPackage("gh:SanderMertens/flecs#d7d0c4f")
+list(APPEND LIBS flecs::flecs)
 
 CPMAddPackage(
     NAME imgui
@@ -61,5 +61,7 @@ endif()
 list(APPEND LIBS imgui)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
+
 add_subdirectory(src)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})

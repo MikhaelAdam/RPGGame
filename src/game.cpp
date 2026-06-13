@@ -1,8 +1,12 @@
 #include "game.hpp"
+#include "state/statebase.hpp"
+#include "state/mainmenustate.hpp"
 
 Game::Game(int argc, char **argv)
     : m_window(nullptr, &SDL_DestroyWindow),
-      m_renderer(nullptr, &SDL_DestroyRenderer)
+      m_renderer(nullptr, &SDL_DestroyRenderer),
+      m_ecs(),
+      m_stateMachine(new StateMachine(m_ecs))
 {
 }
 
@@ -26,13 +30,15 @@ SDL_AppResult Game::Init(){
     if (!SDL_ShowWindow(m_window.get())) {
 	    return sdl_error();
     }
-    
+    m_stateMachine->changeState(new MainMenuState(m_ecs));
     return SDL_APP_CONTINUE;
 
 }
 
 SDL_AppResult Game::HandleEvent(SDL_Event* event){
-    	switch (event->type)
+    
+    m_stateMachine->handleEvent(*event);
+    switch (event->type)
 	{
 		case SDL_EVENT_QUIT:
 			return SDL_APP_SUCCESS;
@@ -51,6 +57,7 @@ SDL_AppResult Game::HandleEvent(SDL_Event* event){
 
 SDL_AppResult Game::OnRender()
 {
+    m_stateMachine->render( m_renderer.get());
     SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(m_renderer.get());
 
@@ -60,6 +67,11 @@ SDL_AppResult Game::OnRender()
 
 SDL_AppResult Game::OnUpdate()
 {
+    LAST = NOW;
+    NOW = SDL_GetPerformanceCounter();
+
+    deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency() );
+    m_stateMachine->update(deltaTime);
     return SDL_APP_CONTINUE;
 }
 
@@ -72,6 +84,7 @@ SDL_AppResult Game::Iterate()
 
 void Game::Quit(SDL_AppResult result)
 {
+    m_stateMachine->changeState(nullptr);
     SDL_DestroyRenderer(m_renderer.get());
     SDL_DestroyWindow(m_window.get());
     SDL_Quit();

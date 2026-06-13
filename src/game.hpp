@@ -1,4 +1,5 @@
 #pragma once
+#include "state/statemachine.hpp"
 
 #include <SDL3/SDL.h>
 #include <memory>
@@ -18,13 +19,20 @@ public:
     SDL_AppResult OnRender();
     SDL_AppResult OnUpdate();
     SDL_AppResult Iterate();
+
     void Quit(SDL_AppResult result);
 
 private:
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
+    double deltaTime = 0;
     
     std::unique_ptr <SDL_Window, decltype(&SDL_DestroyWindow)> m_window;
 	std::unique_ptr <SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_renderer;
     
+    StateMachine *m_stateMachine;
+    flecs::world m_ecs;
+
     SDL_AppResult sdl_error(const std::source_location& loc = std::source_location::current()) {
 	SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s:%d:%d: %s\n", loc.file_name(), loc.line(), loc.column(),
 		SDL_GetError());
