@@ -1,3 +1,5 @@
+#pragma once
+
 struct Transform {
     float x, y;
     float rotation;

@@ -2,6 +2,8 @@
 #include "state/statebase.hpp"
 #include "state/mainmenustate.hpp"
 
+constexpr int frameCap = 60;
+
 Game::Game(int argc, char **argv)
     : m_window(nullptr, &SDL_DestroyWindow),
       m_renderer(nullptr, &SDL_DestroyRenderer),
@@ -30,7 +32,7 @@ SDL_AppResult Game::Init(){
     if (!SDL_ShowWindow(m_window.get())) {
 	    return sdl_error();
     }
-    m_stateMachine->changeState(new MainMenuState(m_ecs));
+    m_stateMachine->changeState(new MainMenuState(m_stateMachine));
     return SDL_APP_CONTINUE;
 
 }
@@ -69,8 +71,13 @@ SDL_AppResult Game::OnUpdate()
 {
     LAST = NOW;
     NOW = SDL_GetPerformanceCounter();
-
-    deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency() );
+    deltaTime = static_cast<double>((NOW - LAST) * 1000) / SDL_GetPerformanceFrequency();
+    if (deltaTime < (1000.0 / frameCap)) {
+        SDL_Delay(static_cast<Uint32>((1000.0 / frameCap) - deltaTime));
+        NOW = SDL_GetPerformanceCounter();
+        deltaTime = static_cast<double>((NOW - LAST) * 1000) / SDL_GetPerformanceFrequency();
+    }
+    std::cout << "Delta Time: " << deltaTime << " ms" << std::endl;
     m_stateMachine->update(deltaTime);
     return SDL_APP_CONTINUE;
 }

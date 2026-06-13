@@ -2,6 +2,7 @@
 #include "state/statemachine.hpp"
 
 #include <SDL3/SDL.h>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
