@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 project(RPGGame)
+
 if(POLICY CMP0091)
     cmake_policy(SET CMP0091 NEW)
 endif()
@@ -63,5 +64,5 @@ list(APPEND LIBS imgui)
 add_executable(${PROJECT_NAME} src/main.cpp)
 
 add_subdirectory(src)
-
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})

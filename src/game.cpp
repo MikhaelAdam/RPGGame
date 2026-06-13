@@ -32,13 +32,29 @@ SDL_AppResult Game::Init(){
     if (!SDL_ShowWindow(m_window.get())) {
 	    return sdl_error();
     }
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  
+
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup scaling
+    ImGuiStyle& style = ImGui::GetStyle();      // Set initial font scale. (in docking branch: using io.ConfigDpiScaleFonts=true automatically overrides this for every window depending on the current monitor)
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL3_InitForSDLRenderer(m_window.get(), m_renderer.get());
+    ImGui_ImplSDLRenderer3_Init(m_renderer.get());
+
     m_stateMachine->changeState(new MainMenuState(m_stateMachine));
     return SDL_APP_CONTINUE;
 
 }
 
 SDL_AppResult Game::HandleEvent(SDL_Event* event){
-    
+    ImGui_ImplSDL3_ProcessEvent(event);
     m_stateMachine->handleEvent(*event);
     switch (event->type)
 	{
@@ -59,10 +75,11 @@ SDL_AppResult Game::HandleEvent(SDL_Event* event){
 
 SDL_AppResult Game::OnRender()
 {
+    ImGui::Render();
     m_stateMachine->render( m_renderer.get());
     SDL_SetRenderDrawColor(m_renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(m_renderer.get());
-
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_renderer.get());
     SDL_RenderPresent(m_renderer.get());
     return SDL_APP_CONTINUE;
 }
@@ -77,7 +94,15 @@ SDL_AppResult Game::OnUpdate()
         NOW = SDL_GetPerformanceCounter();
         deltaTime = static_cast<double>((NOW - LAST) * 1000) / SDL_GetPerformanceFrequency();
     }
-    std::cout << "Delta Time: " << deltaTime << " ms" << std::endl;
+    
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+    ImGui::NewFrame();
+    ImGui::Begin("Debug Window");
+    ImGui::Text("Delta Time: %.3f ms", deltaTime);
+    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+    ImGui::End();
+
     m_stateMachine->update(deltaTime);
     return SDL_APP_CONTINUE;
 }
@@ -91,6 +116,10 @@ SDL_AppResult Game::Iterate()
 
 void Game::Quit(SDL_AppResult result)
 {
+    ImGui_ImplSDLRenderer3_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
+    ImGui::DestroyContext();
+
     m_stateMachine->changeState(nullptr);
     SDL_DestroyRenderer(m_renderer.get());
     SDL_DestroyWindow(m_window.get());

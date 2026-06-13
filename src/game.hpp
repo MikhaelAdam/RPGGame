@@ -1,5 +1,8 @@
 #pragma once
 #include "state/statemachine.hpp"
+#include "imgui.h"
+#include "imgui_impl_sdl3.h"
+#include "imgui_impl_sdlrenderer3.h"
 
 #include <SDL3/SDL.h>
 #include <iostream>
@@ -14,8 +17,8 @@
 class Game{
 public:
     Game(int argc, char **argv);
-    SDL_AppResult Init();
     
+    SDL_AppResult Init();
     SDL_AppResult HandleEvent(SDL_Event* event);
     SDL_AppResult OnRender();
     SDL_AppResult OnUpdate();
